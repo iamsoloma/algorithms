@@ -3,12 +3,20 @@
 #include <stdio.h>
 
 
-int pow(int base, int degree, int res, int curr_degre) {
+/*int pow(int base, int degree, int res, int curr_degre) {
     if (curr_degre == degree) {
         return res;
     }
     res *= base;
     return pow(base, degree, res, curr_degre+1);
+}*/
+
+int pow(int base, int degree) {
+    if (degree == 0 ){
+        return 1;
+    } else {
+        return base * pow(base, degree - 1);
+    }
 }
 
 /*int pow(int base, int degree) {
@@ -25,6 +33,7 @@ int pow(int base, int degree, int res, int curr_degre) {
 }*/
 
 int main() {
-    int res = pow(2, 10, 2, 1);
+    //int res = pow(2, 10, 2, 1);
+    int res = pow(2, 10);
     printf("%d ^ %d = %d\n", 2, 10, res);
 }
