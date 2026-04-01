@@ -64,7 +64,8 @@ bool search(Node *root, int value)
     if (value < root->data)
     {
         return search(root->left, value);
-    } else if (value > root->data)
+    }
+    else if (value > root->data)
     {
         return search(root->right, value);
     }
@@ -157,14 +158,89 @@ bool isEmpty(Node *root)
     return root == NULL;
 }
 
-
-void inorderRecursive(Node* root) {
-    if (root == NULL) return;
-    inorderRecursive(root->left);
+void preOrder(Node *root)
+{
+    if (root == NULL)
+    {
+        return;
+    }
     printf("%d ", root->data);
-    inorderRecursive(root->right);
+    preOrder(root->left);
+    preOrder(root->right);
 }
 
+void inOrder(Node *root)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+    inOrder(root->left);
+    printf("%d ", root->data);
+    inOrder(root->right);
+}
+
+void postOrder(Node *root)
+{
+    if (root == NULL)
+    {
+        return;
+    }
+    postOrder(root->left);
+    postOrder(root->right);
+    printf("%d ", root->data);
+}
+
+// Структура для очереди (для BFS)
+#define MAX_SIZE 1000
+typedef struct {
+    Node* items[MAX_SIZE];
+    int front, rear;
+} Queue;
+
+// Инициализация очереди
+void initQueue(Queue* q) {
+    q->front = q->rear = 0;
+}
+
+// Проверка на пустоту
+int isEmpty(Queue* q) {
+    return q->front == q->rear;
+}
+
+// Добавление в очередь
+void enqueue(Queue* q, Node* node) {
+    q->items[q->rear++] = node;
+}
+
+// Извлечение из очереди
+Node* dequeue(Queue* q) {
+    return q->items[q->front++];
+}
+
+void bfs(Node* root)
+{
+    if (root == NULL) {return;}
+    Queue q;
+    initQueue(&q);
+
+    enqueue(&q, root);
+
+    while (!isEmpty(&q))
+    {
+        Node *node = dequeue(&q);
+        if (node->left != NULL)
+        {
+            enqueue(&q, node->left);
+        }
+        if (node->right != NULL)
+        {
+            enqueue(&q, node->right);
+        }
+
+        printf("%d ", node->data);
+    }
+}
 
 int main()
 {
@@ -213,7 +289,7 @@ int main()
         printf("   Удаление %d: ", deleteValues[i]);
         root = deleteNode(root, deleteValues[i]);
         printf("In-order обход после удаления: ");
-        inorderRecursive(root);
+        inOrder(root);
         printf("\n");
     }
     printf("\n");
@@ -225,8 +301,39 @@ int main()
 
     if (isEmpty(root))
     {
-        printf("Дерево успешно очищено\n");
+        printf("Дерево успешно очищено.\n");
     }
+
+    // Пример создания дерева:
+    //       1
+    //     /   \
+    //    2     3
+    //   / \   /
+    //  4   5 6
+
+    printf("Создание vroot:\n");
+    Node *vroot = createNode(1);
+    vroot->left = createNode(2);
+    vroot->right = createNode(3);
+    vroot->left->left = createNode(4);
+    vroot->left->right = createNode(5);
+    vroot->right->left = createNode(6);
+
+    printf("Прямой обход (pre-order): ");
+    preOrder(vroot);
+    printf("\n");
+
+    printf("Симметричный обход (in-order): ");
+    inOrder(vroot);
+    printf("\n");
+
+    printf("Обратный обход (post-order): ");
+    postOrder(vroot);
+    printf("\n");
+
+    printf("Обход в ширину (BFS): ");
+    bfs(vroot);
+    printf("\n");
 
     return 0;
 }
