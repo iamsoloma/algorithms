@@ -255,7 +255,6 @@ void bfs(Node *root)
 */
 Node *InsertMassive(Node *root, int values[], int size)
 {
-    // int n = sizeof(values) / sizeof(values[0]);
 
     for (int i = 0; i < size; i++)
     {
@@ -269,33 +268,35 @@ Node *InsertMassive(Node *root, int values[], int size)
 Реализовать проверку сбалансированности бинарного дерева (разница высот поддеревьев не более 1).
 */
 
-int height(Node *root) {
-    if (root == NULL) {
-        return 1;
+int height(Node *root)
+{
+    if (root == NULL)
+    {
+        return 0;
     }
 
-    if (height(root->left) > height(root->right)) {
+    if (height(root->left) > height(root->right))
+    {
         return height(root->left) + 1;
-    } else {
+    }
+    else
+    {
         return height(root->right) + 1;
     }
 }
 
-int CheckBalance(Node *root) {
-    if (root == NULL) {
+int CheckBalance(Node *root)
+{
+    if (root == NULL)
+    {
         return 1;
     }
 
     int leftHeight = height(root->left);
     int rightHeight = height(root->right);
 
-    if (leftHeight - rightHeight > 1 || rightHeight - leftHeight > 1) {
-        return 0;
-    }
-    
-    int leftBalance = CheckBalance(root->left);
-    int rightBalance = CheckBalance(root->right);
-    if (leftBalance == 0 || rightBalance == 0) {
+    if (leftHeight - rightHeight > 1 || rightHeight - leftHeight > 1)
+    {
         return 0;
     }
 
@@ -307,26 +308,10 @@ int main()
     Node *root = NULL;
 
     // Вставка элементов
-    // int values[] = {50, 30, 70, 20, 40, 60, 80, 15, 25, 35, 45, 55, 65, 75, 85};
-    int values[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+    // int values[] = {50, 30, 70, 20, 40, 60, 80, 15, 25, 35, 45, 55, 65, 75, 85}; // Сбалансировано
+    int values[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10}; // Не сбалансировано
     int n = sizeof(values) / sizeof(values[0]);
     root = InsertMassive(root, values, n);
-
-    // Поиск элементов
-    printf("Поиск элементов:\n");
-    int searchValues[] = {40, 90, 25, 100};
-    for (int i = 0; i < 4; i++)
-    {
-        if (search(root, searchValues[i]))
-        {
-            printf("   %d найден в дереве\n", searchValues[i]);
-        }
-        else
-        {
-            printf("   %d не найден в дереве\n", searchValues[i]);
-        }
-    }
-    printf("\n");
 
     printf("Обход в ширину (BFS): ");
     bfs(root);
