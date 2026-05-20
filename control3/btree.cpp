@@ -13,28 +13,29 @@
 #define MAX_KEYS (2 * T - 1)
 #define MIN_KEYS (T - 1)
 
-
 typedef struct DNSRecord
 {
     char domain[256];
-    char ip[16]; //192.168.001.001
+    char ip[16]; // 192.168.001.001\0
     char owner[256];
-    char registration_date[11]; //DD.MM.YYYY
-    char expiration_date[11]; //DD.MM.YYYY
+    char registration_date[11]; // DD.MM.YYYY\0
+    char expiration_date[11];   // DD.MM.YYYY\0
 };
 
 // Структура узла B-дерева
 typedef struct BTreeNode
 {
-    DNSRecord keys[MAX_KEYS];                         // Массив ключей
+    DNSRecord keys[MAX_KEYS];                 // Массив ключей
     struct BTreeNode *children[MAX_KEYS + 1]; // Дочерние узлы
     int num_keys;                             // Текущее количество ключей
     bool leaf;                                // Является ли узел листом
 } BTreeNode;
 
-DNSRecord *createDNSRecord(const char *ip, const char *owner, const char *registration_date, const char *expiration_date) {
+DNSRecord *createDNSRecord(const char *ip, const char *owner, const char *registration_date, const char *expiration_date)
+{
     DNSRecord *record = (DNSRecord *)malloc(sizeof(DNSRecord));
-    if (!record) {
+    if (!record)
+    {
         printf("Ошибка выделения памяти для DNSRecord\n");
         return NULL;
     }
@@ -235,7 +236,7 @@ DNSRecord get_predecessor(BTreeNode *node, int index)
 // Получение преемника (минимальный ключ в правом поддереве)
 DNSRecord get_successor(BTreeNode *node, int index)
 {
-    BTreeNode *current = node->children[index+1];
+    BTreeNode *current = node->children[index + 1];
 
     // Спускаемся до самого левого узла
     while (!current->leaf)
@@ -335,25 +336,27 @@ void borrow_from_right(BTreeNode *parent, int index)
     BTreeNode *child = parent->children[index];
     BTreeNode *right_sibling = parent->children[index + 1];
 
-    //Перемещаем ключ из parent в child
+    // Перемещаем ключ из parent в child
     child->keys[child->num_keys] = parent->keys[index];
     child->num_keys++;
 
-    //перемещаем ключ из right_sibling в parent
+    // перемещаем ключ из right_sibling в parent
     parent->keys[index] = right_sibling->keys[0];
 
-    //Сдвигаем ключи в right_sibling
-    for (int i = 0; i < right_sibling->num_keys - 1; i++) {
-        right_sibling->keys[i] = right_sibling->keys[i+1];
+    // Сдвигаем ключи в right_sibling
+    for (int i = 0; i < right_sibling->num_keys - 1; i++)
+    {
+        right_sibling->keys[i] = right_sibling->keys[i + 1];
     }
 
-
-    if (!child->leaf) {
-        //Перемещаем первого ребёнка из right_sibling в child
+    if (!child->leaf)
+    {
+        // Перемещаем первого ребёнка из right_sibling в child
         child->children[child->num_keys] = right_sibling->children[0];
-        //Сдвигаем детей в right_sibling влево
-        for (int i = 0; i < right_sibling->num_keys; i++) {
-            right_sibling->children[i] = right_sibling->children[i+1];
+        // Сдвигаем детей в right_sibling влево
+        for (int i = 0; i < right_sibling->num_keys; i++)
+        {
+            right_sibling->children[i] = right_sibling->children[i + 1];
         }
     }
 
@@ -492,7 +495,8 @@ BTreeNode *delete_key(BTreeNode *root, char *domain)
     return root;
 }
 
-void print_record(DNSRecord record) {
+void print_record(DNSRecord record)
+{
     printf("Домен: %s\n", record.domain);
     printf("IP: %s\n", record.ip);
     printf("Владелец: %s\n", record.owner);
@@ -510,7 +514,7 @@ void print_tree(BTreeNode *node, int level)
     for (int i = 0; i < node->num_keys; i++)
     {
         printf("%s ", node->keys[i].domain);
-        //print_record(node->keys[i]);
+        // print_record(node->keys[i]);
     }
     printf("\n");
 
@@ -551,16 +555,16 @@ int main()
     printf("Каждый узел может содержать от %d до %d ключей\n", MIN_KEYS, MAX_KEYS);
     printf("========================================\n\n");
 
-/*
-typedef struct DNSRecord
-{
-    char domain[256];
-    char ip[16]; //192.168.001.001
-    char owner[256];
-    char registration_date[11]; //DD.MM.YYYY
-    char expiration_date[11]; //DD.MM.YYYY
-};
-*/
+    /*
+    typedef struct DNSRecord
+    {
+        char domain[256];
+        char ip[16]; //192.168.001.001
+        char owner[256];
+        char registration_date[11]; //DD.MM.YYYY
+        char expiration_date[11]; //DD.MM.YYYY
+    };
+    */
 
     // Вставка ключей
     DNSRecord Records[] = {
@@ -569,8 +573,7 @@ typedef struct DNSRecord
         {"google.com", "172.217.76.138", "Google LLC", "01.01.2020", "01.01.2030"},
         {"cloudflare.com", "104.16.133.229", "Cloudflare, Inc.", "01.01.2020", "01.01.2030"},
         {"ozon.ru", "185.73.193.68", "LLC Internet Solutions", "01.01.2020", "01.01.2030"},
-        {"wildberries.ru", "185.62.202.2", "Wildberries LLC", "01.01.2020", "01.01.2030"}
-    };
+        {"wildberries.ru", "185.62.202.2", "Wildberries LLC", "01.01.2020", "01.01.2030"}};
 
     /*int keys_to_insert[] = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100,
                             15, 25, 35, 45, 55, 65, 75, 85, 95};*/
